@@ -44,6 +44,7 @@ function handleCallback() {
       `${authConfig.tokenUrl}?client_id=${authConfig.clientId}&redirect_uri=${authConfig.redirectUri}` +
       `&grant_type=authorization_code&code=${code}&code_verifier=${codeVerifierValue}`;
 
+      console.log(tokenUrl);
     fetch(tokenUrl, {
       method: "POST",
       headers: {
@@ -55,7 +56,7 @@ function handleCallback() {
         accessToken = data.access_token;
         console.log("Access Token:", accessToken);
         document.getElementById('dynamicText').innerHTML = `Token = ${accessToken}`;
-        console.log("save access token to local storage " + accessToken);
+        // console.log("save access token to local storage " + accessToken);
         localStorage.setItem('savedToken', accessToken);
       })
       .catch((error) =>
@@ -98,11 +99,15 @@ document.addEventListener('DOMContentLoaded', function() {
     lpTag.identities.push(identityFn);
 
     // Authentication JSMethod for LiveEngage
-    window.lpGetAuthenticationToken = function (callback) {
-      console.log("inside lpGetAuthenticationToken!");  
+    window.lpGetAuthenticationToken = function (callback, pkce) {
+      console.log("inside lpGetAuthenticationToken! " + pkce);  
       const authCode = localStorage.getItem('savedToken');
+      const authCode2 = "WvMydGyvkUmz6TTTedTvWMG4QNzED5lVnIyrEnHodF";
+      
       console.log("call back with auth code " + authCode)
-      callback(authCode)
+      const REDIRECT_URI = "http://localhost:5500/index.html";
+      callback({ssoKey: authCode2, redirect_uri: REDIRECT_URI});
+    //   callback(authCode)
       // const URL_PARAMS = new URLSearchParams(window.location.search);
       // const code = URL_PARAMS.get('code');
 
