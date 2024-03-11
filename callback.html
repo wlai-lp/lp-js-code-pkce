@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Window</title>
+    <script>
+        function sendValueBack() {
+            // Get the value from the input field
+            const valueToSend = document.getElementById('inputValue').value;
+
+            // Access the opener (parent) window and call the callback function
+            if (window.opener && window.opener.onValueReceived) {
+                window.opener.onValueReceived(valueToSend);
+
+                // Close the popup window
+                window.close();
+            }
+        }
+    </script>
+</head>
+<body>
+    <label for="inputValue">Enter a value:</label>
+    <input type="text" id="inputValue">
+    <button onclick="sendValueBack()">Send Value Back</button>
+</body>
+</html>

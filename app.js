@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   lpTag.identities.push(identityFn);
 
-  window.lpLoginUser = function (pkce) {
+  window.lpLoginUser = function (code_challenge) {
     window.localStorage.setItem("loginBy", "lp");
     const generatedState = random_string(32);
     //const authURI = authConfig.authorizationUrl;
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
       client_id: authConfig.clientId,
       scope: authConfig.scope,
       response_type: "code",
-      code_challenge: pkce,
+      code_challenge: code_challenge,
       code_challenge_method: "S256",
       state: generatedState,
     };
@@ -138,25 +138,27 @@ document.addEventListener("DOMContentLoaded", function () {
   // Authentication JSMethod for LiveEngage
   // https://l-p.atlassian.net/wiki/spaces/MAN/pages/178225162/Support+oAuth2.0+code+flow+with+PKCE
   // LP generates the pkce code verifier and keeping it secret
-  window.lpGetAuthenticationToken = function (callback, pkce) {
+  window.lpGetAuthenticationToken = function (callback, code_challenge) {
     console.log(
-      "inside lpGetAuthenticationToken! LP generated code verifier " + pkce
+      "inside lpGetAuthenticationToken! LP generated code verifier " + code_challenge
     );
 
     // cache pkce value to store code
-    window.localStorage.setItem("lppkce", pkce);
+    window.localStorage.setItem("lppkce", code_challenge);
 
 
 
     if (typeof code === "undefined" || code === null) {
       console.log("code undefined");
-      window.lpLoginUser(pkce);
+      window.lpLoginUser(code_challenge);
     } else {
       console.log("code exists " + code);
 
+      const lpcallback = "https://liveperson.net";
+
       var payload = {
         ssoKey: code,
-        redirect_uri: document.location.href,
+        redirect_uri: lpcallback,
       };
       // console.log('error: ' + error);
       var error;
@@ -166,32 +168,5 @@ document.addEventListener("DOMContentLoaded", function () {
         callback(payload);
       }
     }
-
-    // const authCode = localStorage.getItem("savedToken");
-    // const authCode2 = "WvMydGyvkUmz6TTTedTvWMG4QNzED5lVnIyrEnHodF";
-
-    // console.log("call back with auth code " + authCode);
-    // const REDIRECT_URI = "http://localhost:5500/index.html";
-    // callback({ ssoKey: authCode2, redirect_uri: REDIRECT_URI });
-    //   callback(authCode)
-    // const URL_PARAMS = new URLSearchParams(window.location.search);
-    // const code = URL_PARAMS.get('code');
-
-    //   // NOTE: this is the location of the code, if oauth ever decide to change it then it will break
-    //   let code = "garbage";
-    //   if(window.location.search.indexOf("code") > 0){
-    //     code = window.location.search.split("&")[0].split("=")[1];
-    //   }
-    //   //- let uri = "http://localhost:3000";
-    //   let uri = "http://localhost:3000/authorization-code/callback";
-
-    //   // you have to return something, even empty code, else the chatbox will keep waiting for code
-    //   console.log("got code " + code);
-    //   console.log("calling callback with code...");
-    //   callback({
-    //     ssoKey: code,
-    //     redirect_uri: uri
-    //   });
-    //- callback(code);
   };
 });
