@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,10 +19,19 @@
             }
         }
     </script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.3/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body>
-    <label for="inputValue">Enter a value:</label>
-    <input type="text" id="inputValue">
-    <button onclick="sendValueBack()">Send Value Back</button>
+
+    <body class="bg-gray-100">
+        <div class="container mx-auto p-8">
+            <label for="inputValue">Enter a value:</label>
+            <input class="input input-bordered input-primary w-full max-w-xs" type="text" id="inputValue">
+            <button class="btn" onclick=sendValueBack()>Send Value Back</button>
+        </div>
+    </body>
 </body>
+
 </html>

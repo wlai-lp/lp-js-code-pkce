@@ -1,30 +1,3 @@
-function base64UrlEncode(str) {
-  const base64 = btoa(str);
-  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-}
-
-function generateCodeVerifier() {
-  return generateRandomString(128);
-}
-
-async function sha256(inputString) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(inputString);
-
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
-
-  return hashHex;
-}
-
-function generateCodeChallenge(codeVerifier) {
-  const codeChallenge = base64UrlEncode(sha256(codeVerifier));
-  return codeChallenge;
-}
 
 function sha256bin(ascii) {
   return hex2bin(sha256(ascii));

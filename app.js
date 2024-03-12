@@ -13,7 +13,7 @@ let accessToken = null;
 function login() {
   window.localStorage.setItem("loginBy", "web");
   const codeVerifier = generate_code_verifier();
-  const codeChallenge = generate_code_challenge(codeVerifier);
+    const codeChallenge = generate_code_challenge(codeVerifier);
 
   console.log("Code Verifier:", codeVerifier);
   console.log("Code Challenge:", codeChallenge);
@@ -44,7 +44,7 @@ function handleCallback() {
   if (code && initiatedBy == "web") {
     // Exchange the code for an access token
     // in LP world, you will send the code and codeVerifer value in LP's getAuthenitcationJWT callback
-    const tokenUrl =
+          const tokenUrl =
       `${authConfig.tokenUrl}?client_id=${authConfig.clientId}&redirect_uri=${authConfig.redirectUri}` +
       `&grant_type=authorization_code&code=${code}&code_verifier=${codeVerifierValue}`;
 
@@ -108,8 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
     window.localStorage.setItem("loginBy", "lp");
     const generatedState = random_string(32);
     //const authURI = authConfig.authorizationUrl;
+    const redirectUri = "http://localhost:5500/callback.html";
     var cnf = {
-      redirect_uri: authConfig.redirectUri,
+      redirect_uri: redirectUri,
       client_id: authConfig.clientId,
       scope: authConfig.scope,
       response_type: "code",
@@ -131,8 +132,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const fullUrl = baseUrl + "?" + urlParameters;
 
     console.log(fullUrl);
-    window.location.href = fullUrl;
-    
+    // window.location.href = fullUrl;
+    // Open the popup window
+    const popup = window.open(fullUrl, 'Popup', 'width=400,height=300');
+    popup.onValueReceived = function(value) {
+      alert('Received value from popup: ' + value);
+  };
+
   };
 
   // Authentication JSMethod for LiveEngage
@@ -142,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log(
       "inside lpGetAuthenticationToken! LP generated code verifier " + code_challenge
     );
+    window.lpauthcallback = callback;
 
     // cache pkce value to store code
     window.localStorage.setItem("lppkce", code_challenge);
@@ -154,7 +161,8 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       console.log("code exists " + code);
 
-      const lpcallback = "https://liveperson.net";
+      // const lpcallback = "https://liveperson.net";
+      const lpcallback = authConfig.redirectUri;
 
       var payload = {
         ssoKey: code,
